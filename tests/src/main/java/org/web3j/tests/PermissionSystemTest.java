@@ -40,7 +40,7 @@ public class PermissionSystemTest {
     }
 
     private static TransactionReceipt waitToGetReceipt(String hash) throws Exception {
-        Thread.sleep(10_000);
+        Thread.sleep(15_000);
         return service.ethGetTransactionReceipt(hash).send().getTransactionReceipt().get();
     }
 

@@ -4,15 +4,21 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.request.Call;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
+import rx.Subscription;
+import rx.functions.Func1;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.Random;
 
 public class SendTransactionDemo {
+    private static final int TIMEOUT = 8000;
     private static Web3j service;
     private static Random random;
+    private static Subscription subscription;
 
     static {
         service = Web3j.build(new HttpService("http://127.0.0.1:1337"));
@@ -65,24 +71,52 @@ public class SendTransactionDemo {
         return service.ethGetTransactionReceipt(txHash).send().getTransactionReceipt().get();
     }
 
+    static void asyncGetReceipt(String hash, ReceiptListener listener) throws Exception {
+        subscription = service.blockObservable(false).filter(Objects::nonNull).subscribe(block -> {
+            System.out.println("block: " + block.getBlock().getHash());
+            try {
+                TransactionReceipt txReceipt = SendTransactionDemo.getTransactionReceipt(hash);
+                if (txReceipt.getBlockHash() != null) {
+                    subscription.unsubscribe();
+                    subscription = null;
+                    if(listener != null) {
+                        listener.getReceipt(txReceipt);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, Throwable::printStackTrace);
+    }
+
     public static void main(String[] args) throws Exception {
         // deploy contract
         String deployContractTxHash = SendTransactionDemo.deployContract();
         System.out.println("wait to deploy contract");
-        Thread.sleep(10000);
 
-        // get contract address from receipt
-        TransactionReceipt txReceipt = SendTransactionDemo.getTransactionReceipt(deployContractTxHash);
-        String contractAddress = txReceipt.getContractAddress();
+        asyncGetReceipt(deployContractTxHash, receipt -> {
+            String contractAddress = receipt.getContractAddress();
+            try {
+                String methodHash = contractFunctionCall(contractAddress);
+                System.out.println("Contract address: " + contractAddress + ", wait to call contract function");
+                final String from = "0dbd369a741319fa5107733e2c9db9929093e3c7";
+                asyncGetReceipt(methodHash, receipt1 -> {
+                    try {
+                        String ethCallResult = call(from, contractAddress, "0x6d4ce63c");
+                        System.out.println("eth_call result: " + ethCallResult);
+                        System.out.println("complete");
+                        System.exit(1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-        // call contract function
-        SendTransactionDemo.contractFunctionCall(contractAddress);
-        System.out.println("Contract address: " + contractAddress + ", wait to call contract function");
-        Thread.sleep(10000);
-
-        String from = "0dbd369a741319fa5107733e2c9db9929093e3c7";
-        String ethCallResult = call(from, contractAddress, "0x6d4ce63c");
-        System.out.println("eth_call result: " + ethCallResult);
-        System.out.println("complete");
+    private interface ReceiptListener {
+        void getReceipt(TransactionReceipt receipt);
     }
 }
