@@ -4,11 +4,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.request.Call;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import rx.Subscription;
-import rx.functions.Func1;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -78,7 +76,6 @@ public class SendTransactionDemo {
                 TransactionReceipt txReceipt = SendTransactionDemo.getTransactionReceipt(hash);
                 if (txReceipt.getBlockHash() != null) {
                     subscription.unsubscribe();
-                    subscription = null;
                     if(listener != null) {
                         listener.getReceipt(txReceipt);
                     }

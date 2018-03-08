@@ -96,7 +96,7 @@ public class TransactionReceiptTest {
         benchResult.type = Config.BenchType.SendTransactionAndGetReceipt;
         benchResult.txNumber = this.config.getTxNumber();
         benchResult.executedFailed = this.failed.get();
-        benchResult.exectedSucceed = this.succeed.get();
+        benchResult.executedSucceed = this.succeed.get();
         benchResult.startHeight = this.startHeight;
         benchResult.endHeight = this.endHeight;
         benchResult.startTime = this.startTime;
@@ -109,7 +109,7 @@ public class TransactionReceiptTest {
     private static class TransactionReceiptBenchResult {
         public Config.BenchType type;
         public long txNumber;
-        public long exectedSucceed;
+        public long executedSucceed;
         public long executedFailed;
         public long startHeight;
         public long endHeight;

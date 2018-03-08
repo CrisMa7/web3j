@@ -9,9 +9,17 @@ contract Token {
         uint256 tokens
     );
 
+    event BalanceOfAddress(address addr);
+
     /* Initializes contract with initial supply tokens to the creator of the contract */
     function Token(uint256 initialSupply) {
         balanceOf[msg.sender] = initialSupply;
+    }
+
+    /* get balance of an address  */
+    function balanceOfAddress(address addr) returns (uint256 value){
+        BalanceOfAddress(addr);
+        return balanceOf[addr];
     }
 
     /* Send coins */

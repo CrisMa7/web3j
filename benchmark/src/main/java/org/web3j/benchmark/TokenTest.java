@@ -1,12 +1,14 @@
 package org.web3j.benchmark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.corba.se.impl.oa.toa.TOA;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.CitaTransactionManager;
+import rx.functions.Action1;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,9 @@ public class TokenTest {
     private Web3j service;
     private Token token;
 
+    /*
+    * load account information from token_test_config.json, set 0  to balance of others
+    * */
     public TokenTest(Web3j service, String path) throws Exception {
         Accounts accounts = Accounts.load(path);
         this.service = service;
@@ -64,7 +69,7 @@ public class TokenTest {
         });
     }
 
-    // when start, account hava 0 tokens, creator have initialSupply tokens
+    // when start, others`s account have 0 tokens, creator have initialSupply tokens
     private void testAccountsInit() throws Exception {
         // First, test if the creator have initialSupply tokens
         CompletableFuture<BigInteger> tokensOfCreator = this.token.balanceOf(creator.getAddress()).sendAsync();
@@ -83,6 +88,7 @@ public class TokenTest {
     }
 
     private void randomTransferToken() {
+        // this.accounts contains the accounts of creator and others, so it`s size is 4
         ArrayList<Credentials> credentials = new ArrayList<>(this.accounts.keySet());
         int accountNum = credentials.size();
         Random random = new Random();
@@ -91,7 +97,7 @@ public class TokenTest {
         new Thread(this::blockObserve).start();
 
         while (true) {
-            int[] pair = random.ints(0, accountNum).limit(2).toArray();
+            int[] pair = random.ints(0, accountNum).limit(2).toArray();  // random get two numbers from [0, 4)
             Credentials from;
             Credentials to;
             if (this.accounts.get(credentials.get(pair[0])) > this.accounts.get(credentials.get(pair[1]))) {
@@ -107,6 +113,7 @@ public class TokenTest {
                 continue;
             }
 
+            // get random number from difference of balance
             long transfer = ThreadLocalRandom.current().nextLong(0, balanceOfFrom - balanceOfTo);
             TransferEvent event = new TransferEvent(from, to, transfer);
             try {
@@ -135,6 +142,7 @@ public class TokenTest {
                 System.exit(1);
             }
 
+            // if event.tokens letter 10, then transfer all tokens to creator
             if (event.tokens < shuffleThreshold) {
                 shuffle(credentials.get(0));
             }
@@ -158,6 +166,7 @@ public class TokenTest {
         });
     }
 
+    // the amount tokens of all accounts equals initialSupply
     private boolean isTokenConserve() {
         Map<Credentials, Long> accountTokens = this.accounts.keySet()
                 .stream()
@@ -198,6 +207,12 @@ public class TokenTest {
     private void eventObserve() {
         rx.Observable<Token.TransferEventResponse> observable = this.token.transferEventObservable(DefaultBlockParameter.valueOf(BigInteger.ONE), DefaultBlockParameter.valueOf("latest"));
         observable.subscribe(event -> System.out.println("Observable, TransferEvent(" + event.from + ", " + event.to + ", " + event.tokens.longValue() + ")"));
+
+        rx.Observable<Token.BalanceOfAddressEventResponse> observable1 =
+                this.token.balanceOfAddressEventObservable(DefaultBlockParameter.valueOf(BigInteger.ONE), DefaultBlockParameter.valueOf("latest"));
+        observable1.subscribe(event -> {
+            System.out.println("Observable, BalanceOfAddress(" + event.addr + ")");
+        });
     }
 
     private void blockObserve() {
@@ -254,10 +269,10 @@ public class TokenTest {
 
         CompletableFuture<TransactionReceipt> execute(Web3j service) throws IOException {
             Token token = TokenTest.this.tokenOf(this.from);
-            BigInteger currentHeigt = TokenTest.this.getCurrentHeight();
+            BigInteger currentHeight = TokenTest.this.getCurrentHeight();
             return token.transfer(this.to.getAddress(), BigInteger.valueOf(tokens),
                     BigInteger.valueOf(100000), TokenTest.this.nextNonce(),
-                    currentHeigt.add(TokenTest.this.offset)).sendAsync();
+                    currentHeight.add(TokenTest.this.offset)).sendAsync();
         }
 
         @Override
