@@ -1,11 +1,12 @@
 package org.web3j.crypto;
 
-import org.spongycastle.jcajce.provider.digest.Keccak;
-import org.web3j.utils.Numeric;
-
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+
+import org.spongycastle.jcajce.provider.digest.Keccak;
+import org.web3j.utils.Numeric;
 
 /**
  * Cryptographic hash functions.
