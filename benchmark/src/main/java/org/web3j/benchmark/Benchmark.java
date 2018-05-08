@@ -93,9 +93,14 @@ public class Benchmark {
         }
     }
 
-    public static EthMetaData getMetaData(Web3j service, long currentBlockNumber) throws Exception{
-        return service.ethMetaData(DefaultBlockParameter.valueOf(BigInteger.valueOf(currentBlockNumber)))
-                .send().getEthMetaData();
+    public static EthMetaData getMetaData(Web3j service, long blockNumber) throws Exception{
+        if(blockNumber == 0) {
+            return service.ethMetaData(DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber)))
+                    .send().getEthMetaData();
+        }else {
+            return service.ethMetaData(DefaultBlockParameter.valueOf("latest"))
+                    .send().getEthMetaData();
+        }
     }
 
     // Note: t1 < t2
