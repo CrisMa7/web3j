@@ -93,8 +93,7 @@ public class Benchmark {
         }
     }
 
-    public static EthMetaData getMetaData(Web3j service) throws Exception{
-        long currentBlockNumber = getBlockNumber(service);
+    public static EthMetaData getMetaData(Web3j service, long currentBlockNumber) throws Exception{
         return service.ethMetaData(DefaultBlockParameter.valueOf(BigInteger.valueOf(currentBlockNumber)))
                 .send().getEthMetaData();
     }
