@@ -2,7 +2,7 @@ package org.web3j.tx;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -53,7 +53,7 @@ public class CitaTransactionManager extends TransactionManager {
     }
 
     // adapt to cita
-    public CompletableFuture<EthSendTransaction> sendTransactionAsync(
+    public Future<EthSendTransaction> sendTransactionAsync(
          String to, String data, BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, int chainId) throws IOException {
         Transaction transaction = new Transaction(to, nonce, quota.longValue(), validUntilBlock.longValue(), version.intValue(), chainId, data);
         return web3j.ethSendRawTransaction(transaction.sign(credentials)).sendAsync();

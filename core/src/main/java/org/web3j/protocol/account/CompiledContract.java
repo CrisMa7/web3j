@@ -95,27 +95,22 @@ public class CompiledContract {
 
     /// TODO: how to distinguish overload function which the num of args are same???
     public AbiDefinition getFunctionAbi(String funcName, int numOfArgs) throws ContractFuncNotFound {
-        Object[] abiDefinitions = this.typedABI
-                .stream()
-                .filter(abiDefinition ->
-                        abiDefinition.getType().equals("function") &&
-                        abiDefinition.getName().equals(funcName) &&
-                        abiDefinition.getInputs().size() == numOfArgs)
-                .toArray();
-
-        if (abiDefinitions.length == 0) {
-            throw new ContractFuncNotFound(funcName, numOfArgs);
-        } else {
-            return (AbiDefinition)abiDefinitions[0];
+        for(AbiDefinition abiDefinition: this.typedABI) {
+            if (abiDefinition.getType().equals("function") &&
+                abiDefinition.getName().equals(funcName) &&
+                abiDefinition.getInputs().size() == numOfArgs) {
+                return abiDefinition;
+            }
         }
+        throw new ContractFuncNotFound(funcName, numOfArgs);
     }
 
-    public AbiDefinition getEventAbi(String eventName) {
-        Object[] abiDefinitions = this.typedABI
-                .stream()
-                .filter(abiDefinition ->
-                        abiDefinition.getType().equals("event") && abiDefinition.getName().equals(eventName))
-                .toArray();
-        return (AbiDefinition) abiDefinitions[0];
+    public AbiDefinition getEventAbi(String eventName) throws Exception {
+        for(AbiDefinition abiDefinition : this.typedABI) {
+            if (abiDefinition.getType().equals("event") && abiDefinition.getName().equals(eventName)) {
+                return abiDefinition;
+            }
+        }
+        throw new Exception("Cannot found event");
     }
 }
