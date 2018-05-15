@@ -1,11 +1,9 @@
 package org.web3j.abi.datatypes;
 
-import org.web3j.abi.TypeReference;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.web3j.abi.TypeReference;
 
 public class UnorderedEvent {
     private class EventType {
@@ -36,7 +34,7 @@ public class UnorderedEvent {
 
     public List<TypeReference<Type>> getParameters() {
         List<TypeReference<Type>> list = new ArrayList<>();
-        for(EventType eventType : this.params) {
+        for (EventType eventType : this.params) {
             list.add(eventType.type);
         }
         return list;
@@ -44,7 +42,7 @@ public class UnorderedEvent {
 
     public List<TypeReference<Type>> getIndexedParameters() {
         List<TypeReference<Type>> list = new ArrayList<>();
-        for(EventType eventType : this.params) {
+        for (EventType eventType : this.params) {
             if (eventType.indexed) {
                 list.add(eventType.type);
             }
@@ -54,7 +52,7 @@ public class UnorderedEvent {
 
     public List<Integer> getIndexedParametersSeq() {
         List<Integer> list = new ArrayList<>();
-        for(EventType eventType : this.params) {
+        for (EventType eventType : this.params) {
             if (eventType.indexed) {
                 list.add(eventType.seqNum);
             }
@@ -64,7 +62,7 @@ public class UnorderedEvent {
 
     public List<TypeReference<Type>> getNonIndexedParameters() {
         List<TypeReference<Type>> list = new ArrayList<>();
-        for(EventType eventType : this.params) {
+        for (EventType eventType : this.params) {
             if (!eventType.indexed) {
                 list.add(eventType.type);
             }
@@ -74,7 +72,7 @@ public class UnorderedEvent {
 
     public List<Integer> getNonIndexedParametersSeq() {
         List<Integer> list = new ArrayList<>();
-        for(EventType eventType : this.params) {
+        for (EventType eventType : this.params) {
             if (!eventType.indexed) {
                 list.add(eventType.seqNum);
             }

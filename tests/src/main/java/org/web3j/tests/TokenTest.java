@@ -40,7 +40,7 @@ public class TokenTest {
 
     private static TransactionReceipt waitToGetReceipt(String hash) throws Exception {
         Thread.sleep(10_000);
-        return service.ethGetTransactionReceipt(hash).send().getTransactionReceipt().get();
+        return service.ethGetTransactionReceipt(hash).send().getTransactionReceipt();
     }
 
     public TokenTest() throws Exception {

@@ -69,7 +69,7 @@ public class SendTransactionDemo {
 
     // Get transaction receipt
     static TransactionReceipt getTransactionReceipt(String txHash) throws Exception {
-        return service.ethGetTransactionReceipt(txHash).send().getTransactionReceipt().get();
+        return service.ethGetTransactionReceipt(txHash).send().getTransactionReceipt();
     }
 
     public static void main(String[] args) throws Exception {
