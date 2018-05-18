@@ -269,5 +269,13 @@ public class Sign {
             result = 31 * result + Arrays.hashCode(s);
             return result;
         }
+
+        public byte[] get_signature() {
+            byte[] sig = new byte[65];
+            System.arraycopy(r, 0, sig, 0, 32);
+            System.arraycopy(s, 0, sig, 32, 32);
+            sig[64] = v;
+            return sig;
+        }
     }
 }
