@@ -82,11 +82,11 @@ public class HttpService extends Service {
     }
 
     private static void configureLogging(OkHttpClient.Builder builder) {
-        if (log.isDebugEnabled()) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(log::debug);
+//        if (log.isDebugEnabled()) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(logging);
-        }
+//        }
     }
 
     @Override

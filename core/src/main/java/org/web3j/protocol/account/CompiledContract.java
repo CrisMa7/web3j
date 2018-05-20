@@ -68,8 +68,10 @@ public class CompiledContract {
     /// TODO: support windows OS
     private void generateAbiAndBin(File contractFile) throws IOException, InterruptedException, ContractCompileError {
         String callSolcCmd = String.format("solc %s --abi --bin --optimize --overwrite -o /tmp/", contractFile.getAbsolutePath());
-
+        System.out.println("cmd: " + callSolcCmd);
+        System.out.println("path: " + contractFile.getAbsolutePath());
         CallCmd.ExecutedResult result = CallCmd.callCmd(callSolcCmd);
+        System.out.println("result: " + result.exitCode);
         if (result.exitCode != 0) {
             throw new ContractCompileError(result.output);
         }
