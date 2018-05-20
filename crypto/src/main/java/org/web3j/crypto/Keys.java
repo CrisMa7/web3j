@@ -10,8 +10,8 @@ import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 import java.util.Arrays;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.web3j.utils.Numeric;
 import org.web3j.utils.Strings;
 
@@ -47,7 +47,7 @@ public class Keys {
     static KeyPair createSecp256k1KeyPair() throws NoSuchProviderException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA", "SC");
         ECGenParameterSpec ecGenParameterSpec = new ECGenParameterSpec("secp256k1");
         keyPairGenerator.initialize(ecGenParameterSpec, secureRandom());
         return keyPairGenerator.generateKeyPair();
@@ -83,6 +83,32 @@ public class Keys {
     public static byte[] getAddress(byte[] publicKey) {
         byte[] hash = Hash.sha3(publicKey);
         return Arrays.copyOfRange(hash, hash.length - 20, hash.length);  // right most 160 bits
+    }
+
+    /**
+     * Checksum address encoding as per
+     * <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">EIP-55</a>.
+     *
+     * @param address a valid hex encoded address
+     * @return hex encoded checksum address
+     */
+    public static String toChecksumAddress(String address) {
+        String lowercaseAddress = Numeric.cleanHexPrefix(address).toLowerCase();
+        String addressHash = Numeric.cleanHexPrefix(Hash.sha3String(lowercaseAddress));
+
+        StringBuilder result = new StringBuilder(lowercaseAddress.length() + 2);
+
+        result.append("0x");
+
+        for (int i = 0; i < lowercaseAddress.length(); i++) {
+            if (Integer.parseInt(String.valueOf(addressHash.charAt(i)), 16) >= 8) {
+                result.append(String.valueOf(lowercaseAddress.charAt(i)).toUpperCase());
+            } else {
+                result.append(lowercaseAddress.charAt(i));
+            }
+        }
+
+        return result.toString();
     }
 
     public static byte[] serialize(ECKeyPair ecKeyPair) {
