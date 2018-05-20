@@ -18,9 +18,10 @@ public class SendTransactionDemo {
     private static int chainId;
 
     static {
-        service = Web3j.build(new HttpService("http://127.0.0.1:1337"));
+        HttpService.setDebug(true);
+        service = Web3j.build(new HttpService("http://47.75.129.215:1337"));
         random = new Random(System.currentTimeMillis());
-        chainId = 1;
+        chainId = 0;
     }
 
     static long currentBlockNumber() throws Exception {
@@ -87,7 +88,7 @@ public class SendTransactionDemo {
         System.out.println("Contract address: " + contractAddress + ", wait to call contract function");
         Thread.sleep(10000);
 
-        String from = "0dbd369a741319fa5107733e2c9db9929093e3c7";
+        String from = "0x0dbd369a741319fa5107733e2c9db9929093e3c7";
         String ethCallResult = call(from, contractAddress, "0x6d4ce63c");
         System.out.println("eth_call result: " + ethCallResult);
         System.out.println("complete");
