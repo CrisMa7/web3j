@@ -16,11 +16,13 @@ public class SendTransactionDemo {
     private static Web3j service;
     private static Random random;
     private static int chainId;
+    private static long value;
 
     static {
         service = Web3j.build(new HttpService("http://127.0.0.1:1337"));
         random = new Random(System.currentTimeMillis());
         chainId = 1;
+        value = 0;
     }
 
     static long currentBlockNumber() throws Exception {
@@ -38,7 +40,7 @@ public class SendTransactionDemo {
         BigInteger nonce = BigInteger.valueOf(Math.abs(random.nextLong()));
         long quota = 1000000;
 
-        Transaction tx = Transaction.createContractTransaction(nonce, quota, validUntilBlock, VERSION, chainId, contractCode);
+        Transaction tx = Transaction.createContractTransaction(nonce, quota, validUntilBlock, VERSION, chainId, value, contractCode);
         String rawTx = tx.sign(privateKey);
 
         return service.ethSendRawTransaction(rawTx).send().getSendTransactionResult().getHash();
@@ -55,7 +57,7 @@ public class SendTransactionDemo {
         long quota = 1000000;
 
 
-        Transaction tx = Transaction.createFunctionCallTransaction(contractAddress, nonce, quota, validUntilBlock, VERSION, functionCallData, chainId);
+        Transaction tx = Transaction.createFunctionCallTransaction(contractAddress, nonce, quota, validUntilBlock, VERSION, chainId, value, functionCallData);
         String rawTx = tx.sign(privateKey);
 
         return service.ethSendRawTransaction(rawTx).send().getSendTransactionResult().getHash();

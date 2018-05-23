@@ -148,8 +148,8 @@ public abstract class Contract extends ManagedTransaction {
      *
      * @return the TransactionReceipt generated at contract deployment
      */
-    public Optional<TransactionReceipt> getTransactionReceipt() {
-        return Optional.ofNullable(transactionReceipt);
+    public TransactionReceipt getTransactionReceipt() {
+        return transactionReceipt;
     }
 
     /**
@@ -236,9 +236,9 @@ public abstract class Contract extends ManagedTransaction {
 
     // adapt to cita
     TransactionReceipt executeTransaction(
-            String data, BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version , BigInteger chainId)
+            String data, BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version , int chainId, long value)
             throws TransactionException, IOException {
-        return sendAdaptToCita(contractAddress, data, quota, nonce, validUntilBlock, version, chainId);
+        return sendAdaptToCita(contractAddress, data, quota, nonce, validUntilBlock, version, chainId, value);
     }
 
     protected <T extends Type> RemoteCall<T> executeRemoteCallSingleValueReturn(Function function) {
@@ -264,8 +264,8 @@ public abstract class Contract extends ManagedTransaction {
     }
 
     protected RemoteCall<TransactionReceipt> executeRemoteCallTransaction(
-            Function function, BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, BigInteger chainId) {
-        return new RemoteCall<>(() -> executeTransaction(FunctionEncoder.encode(function), quota, nonce, validUntilBlock, version, chainId));
+            Function function, BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, int chainId, long value) {
+        return new RemoteCall<>(() -> executeTransaction(FunctionEncoder.encode(function), quota, nonce, validUntilBlock, version, chainId, value));
     }
 
     private static <T extends Contract> T create(
@@ -286,10 +286,10 @@ public abstract class Contract extends ManagedTransaction {
 
     private static <T extends Contract> T create(
             T contract, String binary, String encodedConstructor,
-            BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, BigInteger chainId)
+            BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, int chainId, long value)
             throws IOException, TransactionException {
         TransactionReceipt transactionReceipt =
-                contract.executeTransaction(binary + encodedConstructor, quota, nonce, validUntilBlock, version, chainId);
+                contract.executeTransaction(binary + encodedConstructor, quota, nonce, validUntilBlock, version, chainId, value);
 
         String contractAddress = transactionReceipt.getContractAddress();
         if (contractAddress == null) {
@@ -352,7 +352,7 @@ public abstract class Contract extends ManagedTransaction {
     protected static <T extends Contract> T deploy(
             Class<T> type,
             Web3j web3j, TransactionManager transactionManager,
-            BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, String binary, BigInteger chainId, String encodedConstructor)
+            BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, String binary, int chainId, long value, String encodedConstructor)
             throws IOException, TransactionException {
 
         try {
@@ -365,7 +365,7 @@ public abstract class Contract extends ManagedTransaction {
             // Unfortunately, we need empty string(not null) that represent create contract
             T contract = constructor.newInstance(
                     "", web3j, transactionManager);
-            return create(contract, binary, encodedConstructor, quota, nonce, validUntilBlock, version, chainId);
+            return create(contract, binary, encodedConstructor, quota, nonce, validUntilBlock, version, chainId, value);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -382,9 +382,9 @@ public abstract class Contract extends ManagedTransaction {
     protected static <T extends Contract> RemoteCall<T> deployRemoteCall(
             Class<T> type,
             Web3j web3j, TransactionManager transactionManager,
-            BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, BigInteger chainId, String binary, String encodedConstructor) {
+            BigInteger quota, BigInteger nonce, BigInteger validUntilBlock, BigInteger version, int chainId, long value, String binary, String encodedConstructor) {
         return new RemoteCall<>(() -> deploy(
-                type, web3j, transactionManager, quota, nonce, validUntilBlock, version, binary, chainId, ""));
+                type, web3j, transactionManager, quota, nonce, validUntilBlock, version, binary, chainId, value, ""));
     }
 
     protected static <T extends Contract> RemoteCall<T> deployRemoteCall(
