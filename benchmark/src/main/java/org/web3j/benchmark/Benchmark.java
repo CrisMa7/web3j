@@ -96,7 +96,7 @@ public class Benchmark {
     public static EthMetaData getMetaData(Web3j service) {
         try{
             return service.ethMetaData(DefaultBlockParameter.valueOf("latest"))
-                    .send().getEthMetaData();
+                    .send().getEthMetaDataResult();
         }catch (Throwable e) {
             System.out.println("get block failed because of " + e);
             return null;
@@ -105,7 +105,7 @@ public class Benchmark {
     public static EthMetaData getMetaData(Web3j service, long blockNumber) {
        try{
            return service.ethMetaData(DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber)))
-                   .send().getEthMetaData();
+                   .send().getEthMetaDataResult();
        }catch (Throwable e) {
            System.out.println("get block " + blockNumber + " failed because of " + e);
            return null;
