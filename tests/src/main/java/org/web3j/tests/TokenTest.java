@@ -17,21 +17,25 @@ public class TokenTest {
     private static final String privateKey = "352416e1c910e413768c51390dfd791b414212b7b4fe6b1a18f58007fa894214";
     private static final String fromAddress = "0x0dbd369a741319fa5107733e2c9db9929093e3c7";
     private static final String toAddress = "0x546226ed566d0abb215c9db075fc36476888b310";
-    private static final String solPath = "tests/src/main/resources/Token.sol";
+    private static final String solPath = "src/main/resources/Token.sol";
     private static final int version = 0;
-    private static final int chainId = 1;
+    private static final int chainId = 0;
 
     private static Random random;
     private static BigInteger quota;
-    private final static Web3j service = Web3j.build(new HttpService("http://127.0.0.1:1337"));
+    private static long value;
+    private static Web3j service;
 
     private Account account;
     private CompiledContract tokenContract;
     private String contractAddress;
 
     static {
+        HttpService.setDebug(true);
+        service = Web3j.build(new HttpService("http://47.75.129.215:1337"));
         random = new Random(System.currentTimeMillis());
         quota = BigInteger.valueOf(1000000);
+        value = 0;
     }
 
     private static BigInteger randomNonce() {
@@ -50,7 +54,7 @@ public class TokenTest {
     }
 
     public void deployContract(String path) throws Exception {
-        EthSendTransaction ethSendTransaction = account.deploy(new File(path), randomNonce(), quota, version, chainId);
+        EthSendTransaction ethSendTransaction = account.deploy(new File(path), randomNonce(), quota, version, chainId, value);
         TransactionReceipt receipt = waitToGetReceipt(ethSendTransaction.getSendTransactionResult().getHash());
         if (receipt.getErrorMessage() != null) {
             System.out.println("deploy contract failed because of " + receipt.getErrorMessage());
@@ -62,7 +66,8 @@ public class TokenTest {
 
     public void transfer(String toAddress, BigInteger amount) throws Exception {
         AbiDefinition transfer = tokenContract.getFunctionAbi("transfer", 2);
-        EthSendTransaction ethSendTransaction = (EthSendTransaction) account.callContract(contractAddress, transfer, randomNonce(), quota, version, chainId, toAddress, amount);
+        EthSendTransaction ethSendTransaction = (EthSendTransaction)
+                account.callContract(contractAddress, transfer, randomNonce(), quota, version, chainId, value, toAddress, amount);
         TransactionReceipt receipt = waitToGetReceipt(ethSendTransaction.getSendTransactionResult().getHash());
         if (receipt.getErrorMessage() != null) {
             System.out.println("call transfer method failed because of " + receipt.getErrorMessage());
@@ -73,12 +78,13 @@ public class TokenTest {
 
     public void getBalance(String address) throws Exception {
         AbiDefinition getBalance = tokenContract.getFunctionAbi("getBalance", 1);
-        Object object = account.callContract(contractAddress, getBalance, randomNonce(), quota, version, chainId, address);
+        Object object = account.callContract(contractAddress, getBalance, randomNonce(), quota, version, chainId, value, address);
         System.out.println(address + " has " + object.toString() + " tokens");
     }
 
     public void transferRemote(String toAddress, BigInteger amount) throws Exception {
-        EthSendTransaction ethSendTransaction = (EthSendTransaction) account.callContract(contractAddress, "transfer", randomNonce(), quota, version, chainId, toAddress, amount);
+        EthSendTransaction ethSendTransaction = (EthSendTransaction) account.callContract(
+                contractAddress, "transfer", randomNonce(), quota, version, chainId, value, toAddress, amount);
         TransactionReceipt receipt = waitToGetReceipt(ethSendTransaction.getSendTransactionResult().getHash());
         if (receipt.getErrorMessage() != null) {
             System.out.println("call transfer method failed because of " + receipt.getErrorMessage());
@@ -88,12 +94,13 @@ public class TokenTest {
     }
 
     public void getBalanceRemote(String address) throws Exception {
-        Object object = account.callContract(contractAddress, "getBalance", randomNonce(), quota, version, chainId, address);
+        Object object = account.callContract(contractAddress, "getBalance", randomNonce(), quota, version, chainId, value, address);
         System.out.println(address + " has " + object.toString() + " tokens");
     }
 
     public void storeAbiToBlockchain() throws Exception {
-        EthSendTransaction ethSendTransaction = (EthSendTransaction) account.uploadAbi(contractAddress, tokenContract.getAbi(), randomNonce(), quota, version, chainId);
+        EthSendTransaction ethSendTransaction = (EthSendTransaction) account.uploadAbi(contractAddress,
+                tokenContract.getAbi(), randomNonce(), quota, version, chainId, value);
         TransactionReceipt receipt = waitToGetReceipt(ethSendTransaction.getSendTransactionResult().getHash());
         if (receipt.getErrorMessage() != null) {
             System.out.println("call upload abi method failed because of " + receipt.getErrorMessage());
