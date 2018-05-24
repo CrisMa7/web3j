@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.nervos.web3j.crypto.Credentials;
 import org.nervos.web3j.protocol.core.methods.request.Call;
@@ -20,11 +19,9 @@ import org.nervos.web3j.abi.datatypes.Address;
 import org.nervos.web3j.abi.datatypes.Event;
 import org.nervos.web3j.abi.datatypes.Function;
 import org.nervos.web3j.abi.datatypes.Type;
-import org.nervos.web3j.crypto.Credentials;
 import org.nervos.web3j.protocol.Web3j;
 import org.nervos.web3j.protocol.core.DefaultBlockParameterName;
 import org.nervos.web3j.protocol.core.RemoteCall;
-import org.nervos.web3j.protocol.core.methods.request.Call;
 import org.nervos.web3j.protocol.core.methods.response.EthGetCode;
 import org.nervos.web3j.protocol.core.methods.response.Log;
 import org.nervos.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -225,7 +222,7 @@ public abstract class Contract extends ManagedTransaction {
      *
      * @param data  to send in transaction
      * @param weiValue in Wei to send in transaction
-     * @return {@link Optional} containing our transaction receipt
+     * @return {@link } containing our transaction receipt
      * @throws IOException                 if the call to the node fails
      * @throws TransactionException if the transaction was not mined while waiting
      */

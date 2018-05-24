@@ -3,19 +3,15 @@ package org.nervos.web3j.tx;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.nervos.web3j.crypto.Credentials;
 import org.nervos.web3j.utils.Convert;
 import org.nervos.web3j.utils.Numeric;
-import org.nervos.web3j.crypto.Credentials;
 import org.nervos.web3j.protocol.Web3j;
 import org.nervos.web3j.protocol.core.RemoteCall;
 import org.nervos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.nervos.web3j.protocol.exceptions.TransactionException;
-import org.nervos.web3j.utils.Convert;
-import org.nervos.web3j.utils.Numeric;
 
 /**
  * Class for performing Ether transactions on the Ethereum blockchain.
@@ -37,7 +33,7 @@ public class Transfer extends ManagedTransaction {
      * @param value amount to send
      * @param unit of specified send
      *
-     * @return {@link Optional} containing our transaction receipt
+     * @return {@link } containing our transaction receipt
      * @throws ExecutionException if the computation threw an
      *                            exception
      * @throws InterruptedException if the current thread was interrupted

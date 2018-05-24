@@ -87,7 +87,7 @@ public class JsonRpc2_0Rx {
         return ethPendingTransactionHashObservable(pollingInterval)
                 .flatMap(transactionHash ->
                         web3j.ethGetTransactionByHash(transactionHash).observable())
-                .map(ethTransaction -> ethTransaction.getTransaction().get());
+                .map(ethTransaction -> ethTransaction.getTransaction());
     }
 
     public Observable<EthBlock> blockObservable(

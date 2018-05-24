@@ -3,7 +3,6 @@ package org.nervos.web3j.protocol.core.filters;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 
 import org.nervos.web3j.protocol.Web3j;
 import org.nervos.web3j.protocol.core.Request;
@@ -45,7 +44,7 @@ public class LogFilter extends Filter<Log> {
     }
 
     @Override
-    protected Optional<Request<?, EthLog>> getFilterLogs(BigInteger filterId) {
-        return Optional.of(web3j.ethGetFilterLogs(filterId));
+    protected Request<?, EthLog> getFilterLogs(BigInteger filterId) {
+        return web3j.ethGetFilterLogs(filterId);
     }
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -87,10 +86,10 @@ public abstract class Filter<T> {
 
     private void getInitialFilterLogs() {
         try {
-            Optional<Request<?, EthLog>> maybeRequest = this.getFilterLogs(this.filterId);
+            Request<?, EthLog> maybeRequest = this.getFilterLogs(this.filterId);
             EthLog ethLog = null;
-            if (maybeRequest.isPresent()) {
-                ethLog = maybeRequest.get().send();
+            if (maybeRequest != null) {
+                ethLog = maybeRequest.send();
             } else {
                 ethLog = new EthLog();
                 ethLog.setResult(Collections.emptyList());
@@ -147,7 +146,7 @@ public abstract class Filter<T> {
      * @param filterId Id of the filter for which the historic log should be retrieved
      * @return Historic logs, or an empty optional if the filter cannot retrieve historic logs
      */
-    protected abstract Optional<Request<?, EthLog>> getFilterLogs(BigInteger filterId);
+    protected abstract Request<?, EthLog> getFilterLogs(BigInteger filterId);
 
     void throwException(Response.Error error) {
         throw new FilterException("Invalid request: "

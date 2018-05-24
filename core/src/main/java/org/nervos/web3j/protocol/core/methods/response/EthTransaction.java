@@ -1,7 +1,6 @@
 package org.nervos.web3j.protocol.core.methods.response;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -9,8 +8,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectReader;
 
-import org.nervos.web3j.protocol.ObjectMapperFactory;
-import org.nervos.web3j.protocol.core.Response;
 import org.nervos.web3j.protocol.ObjectMapperFactory;
 import org.nervos.web3j.protocol.core.Response;
 
@@ -30,8 +27,8 @@ import org.nervos.web3j.protocol.core.Response;
  */
 public class EthTransaction extends Response<Transaction> {
 
-    public Optional<Transaction> getTransaction() {
-        return Optional.ofNullable(getResult());
+    public Transaction getTransaction() {
+        return getResult();
     }
 
     public static class ResponseDeserialiser extends JsonDeserializer<Transaction> {
