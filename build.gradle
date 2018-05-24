@@ -43,8 +43,8 @@ allprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    group 'org.web3j'
-    version '3.3.0'
+    group 'org.nervos.web3j'
+    version '3.3.0-android'
 
     apply plugin: 'java'
     apply plugin: 'jacoco'
@@ -97,25 +97,25 @@ subprojects {
 project(':examples') {
     task runDemo(type: JavaExec) {
         classpath = sourceSets.main.runtimeClasspath
-        main = 'org.web3j.examples.SendTransactionDemo'
+        main = 'org.nervos.web3j.examples.SendTransactionDemo'
     }
 
     task permissionTest(type: JavaExec) {
         classpath = sourceSets.main.runtimeClasspath
-        main = 'org.web3j.examples.PermissionSystemTest'
+        main = 'org.nervos.web3j.examples.PermissionSystemTest'
     }
 }
 
 project(':tests') {
     task runTests(type: JavaExec) {
         classpath = sourceSets.main.runtimeClasspath
-        main = 'org.web3j.tests.PermissionSystemTest'
+        main = 'org.nervos.web3j.tests.PermissionSystemTest'
         args = ['src/main/resources/config.json']
     }
 
     task runToken(type: JavaExec) {
         classpath = sourceSets.main.runtimeClasspath
-        main = 'org.web3j.tests.TokenTest'
+        main = 'org.nervos.web3j.tests.TokenTest'
     }
 }
 
@@ -232,7 +232,7 @@ configure(subprojects.findAll {it.name != 'integration-tests'}) {
         publish = true
         pkg {
             repo = 'maven'
-            name = 'org.web3j'
+            name = 'org.nervos.web3j'
             desc = project.description
             userOrg = 'web3j'
             licenses = ['Apache-2.0']

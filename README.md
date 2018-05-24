@@ -136,7 +136,7 @@ $ java -jar console-3.2.0-all.jar solidity generate [--javaTypes|--solidityTypes
 以[benchmark](https://github.com/cryptape/web3j/tree/master/benchmark/src/main/resources)目录下的Token.sol, Token.bin, Token.abi文件为例，代码生成命令为：
 
 ```shell
-java -jar console/build/libs/console-3.2.0-all.jar solidity generate benchmark/src/main/resources/Token.bin benchmark/src/main/resources/Token.abi -o benchmark/src/main/java/ -p org.web3j.benchmark
+java -jar console/build/libs/console-3.2.0-all.jar solidity generate benchmark/src/main/resources/Token.bin benchmark/src/main/resources/Token.abi -o benchmark/src/main/java/ -p org.nervos.web3j.benchmark
 ```
 
 通过代码生成工具，生成[Token.java](https://github.com/cryptape/web3j/blob/master/benchmark/src/main/java/org/web3j/benchmark/Token.java)文件。发送交易相关的接口如deploy和合约方法有额外的`quota`, `nonce`和`invalidUntilBlock`，这三个参数是发送交易必需的(如前所述)。`TransactionManager`必须使用[CitaTransactionManager](https://github.com/cryptape/web3j/blob/master/core/src/main/java/org/web3j/tx/CitaTransactionManager.java)。

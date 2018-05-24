@@ -22,7 +22,7 @@ for target in ${targets}; do
     web3j solidity generate \
         build/${fileName}.bin \
         build/${fileName}.abi \
-        -p org.web3j.generated \
+        -p org.nervos.web3j.generated \
         -o ../../../../../../integration-tests/src/test/java/ > /dev/null
     echo "Complete"
 
