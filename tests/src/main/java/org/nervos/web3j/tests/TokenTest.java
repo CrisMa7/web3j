@@ -21,7 +21,7 @@ public class TokenTest {
     private static final String toAddress = "0x546226ed566d0abb215c9db075fc36476888b310";
     private static final String solPath = "src/main/resources/Token.sol";
     private static final int version = 0;
-    private static final int chainId = 0;
+    private static final int chainId = 1;
 
     private static Random random;
     private static BigInteger quota;
